@@ -8,5 +8,8 @@
             "name": "Azi Baloch",
             "email": "azeemhassni@gmail.com"
         }
-    ]
+    ],
+    "autoload" : {
+        "classmap": ["src/"]
+    }
 }
