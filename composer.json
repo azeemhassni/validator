@@ -1,0 +1,12 @@
+{
+    "name": "azi/validator",
+    "description": "Server side user input validation library",
+    "minimum-stability": "dev",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Azi Baloch",
+            "email": "azeemhassni@gmail.com"
+        }
+    ]
+}
