@@ -65,7 +65,8 @@ if ( !$v->passed() ) {
  * max:[number]
 
 
-## Custom Expressions
+## Custom Expressions & Messages
+* Custom Expressions
 you can register your custom RegExp before running the validator
 
 ```php
@@ -79,8 +80,18 @@ registerExpression method takes 3 arguments
 
 ```Validator::registerExpression($expressionID , $pattern, $message)```
 
+
+* Custom Messages
+
+you can also pass a custom error message with each rule
+
+```php
+ $rules['full_name'] = "required--Please Enter your name|alpha-- Please don't mix special chars and numbers only alpha chars allowed"
+```
+
 ## Conditional Rules
 you can spacify conditional rules for a field
 ```php
  $rules['age'] = 'if:gender[Male](required|min:2|num)';
 ```
+
