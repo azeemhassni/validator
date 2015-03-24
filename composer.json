@@ -10,6 +10,9 @@
         }
     ],
     "autoload" : {
-        "classmap": ["src/"]
+        "psr-0": {"azi\\":"src/"}
     }
 }
+
+
+
