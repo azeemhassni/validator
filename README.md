@@ -67,6 +67,7 @@ if ( !$v->passed() ) {
 
 ## Custom Expressions & Messages
 * Custom Expressions
+
 you can register your custom RegExp before running the validator
 
 ```php
