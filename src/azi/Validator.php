@@ -1,4 +1,4 @@
-<?php namespace azi\validator;
+<?php namespace azi;
 
 /**
  * Class Validator

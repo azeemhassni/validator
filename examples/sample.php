@@ -1,5 +1,5 @@
 <?php
-require_once( "../src/Validator.php" );
+require_once( "../src/azi/Validator.php" );
 use azi\Validator;
 ?>
 
