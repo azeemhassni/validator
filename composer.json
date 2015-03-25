@@ -10,7 +10,9 @@
         }
     ],
     "autoload" : {
-        "psr-0": {"azi\\":"src/"}
+        "psr-4": {
+            "azi\\validator\\" : ["vendor/Validator/src"]
+        }
     }
 }
 
