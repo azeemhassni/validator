@@ -329,14 +329,16 @@ class Validator {
 
                 if ( strpos( $theRule, ':' ) ) {
                     $theRule = explode( ":", $theRule );
-                    if ( strtolower( $theRule[ 0 ] ) == "min" ) {
+                    $length = $theRule[1];
+                    $theRule = $theRule[0];
+                    if ( strtolower( $theRule ) == "min" ) {
                         if ( ! empty( $customMessage[ 'min' ] ) ) {
                             $theMessage = $customMessage[ 'min' ];
                         } else {
-                            $theMessage = $this->keyToLabel( $key ) . ' must be at least ' . $theRule[ 1 ] . " characters long";
+                            $theMessage = $this->keyToLabel( $key ) . ' must be at least ' . $length . " characters long";
                         }
 
-                        if ( strlen( $field ) < $theRule[ 1 ] ) {
+                        if ( strlen( $field ) < $length ) {
                             $return[ $key ] = [
                                 'error'   => 'min',
                                 'message' => $theMessage
@@ -345,15 +347,15 @@ class Validator {
                         }
                     }
 
-                    if ( strtolower( $theRule[ 0 ] ) == "max" ) {
+                    if ( strtolower( $theRule ) == "max" ) {
 
                         if ( ! empty( $customMessage[ 'max' ] ) ) {
                             $theMessage = $customMessage[ 'max' ];
                         } else {
-                            $theMessage = $this->keyToLabel( $key ) . ' must be less than ' . $theRule[ 1 ] . " characters";
+                            $theMessage = $this->keyToLabel( $key ) . ' must be less than ' . $length . " characters";
                         }
 
-                        if ( strlen( $field ) > $theRule[ 1 ] ) {
+                        if ( strlen( $field ) > $length ) {
                             $return[ $key ] = [
                                 'error'   => 'max',
                                 'message' => $theMessage
