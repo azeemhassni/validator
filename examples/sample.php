@@ -7,16 +7,16 @@ use azi\Validator;
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Server side form validation</title>
+    <title>Validator - the Server side form validation library</title>
 </head>
 <body>
 
 <form method="post" action="view.php">
     <p>
-        <label>Name :
-            <input type="text" name="name">
+        <label>Email :
+            <input type="text" name="email">
         </label>
-        <?= Validator::error('name') ? Validator::error('name') : ""; ?>
+        <?= Validator::error('email') ? Validator::error('email') : ""; ?>
     </p>
     <p>
         <label>Age :

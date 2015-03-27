@@ -73,6 +73,11 @@ class Validator {
     private static $session_data_key = "form_validation_errors";
 
     /**
+     * @var array
+     */
+    private $builtin_rules = [];
+
+    /**
      *  Class Constructor
      */
     public function __construct() {
@@ -83,6 +88,22 @@ class Validator {
             'num'       => '#^([0-9])+$#',
             'alpha-num' => '#^([a-zA-Z0-9\s])$#',
         );
+
+
+        $this->builtin_rules = array(
+            array(
+                'id' => 'email',
+                'exp' => '#^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$#',
+                'message' => 'Please enter a valid email address'
+            )
+        );
+
+
+        foreach($this->builtin_rules as $rule) {
+            $rule = (object) $rule;
+            $this->registerExpression($rule->id, $rule->exp, $rule->message);
+        }
+
 
         static::$instance = $this;
     }
@@ -367,9 +388,10 @@ class Validator {
 
                 /* Custom Expressions */
                 if ( array_key_exists( $theRule, $this->expressions ) ) {
-
                     if ( ! preg_match( $this->expressions[ $theRule ], $field ) ) {
-                        if ( array_key_exists( $theRule, $this->error_messages ) ) {
+                        if(isset($customMessage[$theRule])) {
+                            $error_message = $customMessage[$theRule];
+                        } else if ( array_key_exists( $theRule, $this->error_messages ) ) {
                             $error_message = $this->error_messages[ $theRule ];
                         } else {
                             $error_message = $this->keyToLabel( $key ) . ' dose\'t match the required pattern';

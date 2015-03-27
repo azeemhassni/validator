@@ -8,8 +8,8 @@ $v = new Validator();
 if($_POST) {
 
     $rules = array(
-        'name' => 'alpha|required',
-        'age'  => 'num--Only Numeric value expected|required--please provide your age',
+        'email' => 'email--Invalid email provided|required',
+        'age'  => 'num|required--please provide your age',
     );
 
     $v->validate( $_POST, $rules );
