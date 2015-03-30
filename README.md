@@ -108,7 +108,7 @@ you can spacify conditional rules for a field
 
 you can also compare a field with another
 ```php
-  $rules['password'] = 'required:min:8';
+  $rules['password'] = 'required|min:8';
   $rules['confirm_password'] = 'same:password';
 ```
 
