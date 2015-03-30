@@ -93,7 +93,7 @@ class Validator {
         $this->builtin_rules = array(
             array(
                 'id' => 'email',
-                'exp' => '#^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$#',
+                'exp' => '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/',
                 'message' => 'Please enter a valid email address'
             )
         );
@@ -183,7 +183,7 @@ class Validator {
      *
      * @return mixed
      */
-    public static function error( $fieldKey ) {
+    public static function error( $fieldKey , $template = null) {
 
         if(!session_id()) {
             session_start();
@@ -201,7 +201,27 @@ class Validator {
         }
 
         if ( isset( self::$errors[ $fieldKey ][ 'message' ] ) ) {
-            return self::$errors[ $fieldKey ][ 'message' ];
+            $message = self::$errors[ $fieldKey ][ 'message' ];
+            if(!is_null($template)) {
+                $message = str_ireplace(":message",$message, $template);
+            }
+
+            return $message;
+        }
+
+        return false;
+    }
+
+
+    /**
+     * @param $char
+     * @param $string
+     *
+     * @return bool
+     */
+    public function findChar($char , $string){
+        if ( preg_match( "#{$char}#", $string ) ) {
+            return true;
         }
 
         return false;
@@ -255,6 +275,9 @@ class Validator {
                 if ( $theRule == "IGNORE_ME5" ) {
                     continue;
                 }
+
+
+
                 $customMessage = [ ];
                 if ( strpos( $theRule, "--" ) ) {
                     $rcm     = explode( "--", $theRule ); // custom message for current rule
@@ -263,6 +286,12 @@ class Validator {
                         $rcm[ 0 ] = explode( ":", $rcm[ 0 ] )[ 0 ];
                     }
                     $customMessage[ $rcm[ 0 ] ] = $rcm[ 1 ];
+                }
+
+                if($this->findChar("same:",$theRule)) {
+                    $same_as_rule = explode(":", $theRule);
+                    $this->registerExpression($same_as_rule[0], "#^{$fields[$same_as_rule[1]]}$#", "{$this->keyToLabel($key)} must be same as {$this->keyToLabel($same_as_rule[1])}");
+                    $theRule = $same_as_rule[0];
                 }
 
 
@@ -388,6 +417,8 @@ class Validator {
 
                 /* Custom Expressions */
                 if ( array_key_exists( $theRule, $this->expressions ) ) {
+
+
                     if ( ! preg_match( $this->expressions[ $theRule ], $field ) ) {
                         if(isset($customMessage[$theRule])) {
                             $error_message = $customMessage[$theRule];
@@ -402,7 +433,6 @@ class Validator {
                         ];
                         continue;
                     }
-
                 }
 
             }

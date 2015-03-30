@@ -55,14 +55,22 @@ if ( !$v->passed() ) {
  <?= Validator::error('name') ? Validator::error('name') : ""; ?>
 ```
 
+you can wrap error messages with custom HTML markup
+
+```php
+  Validator::error('confirm_password', '<span class="error">:message</span>');
+```
+
 
 ## Rules
  * required
  * num
  * alpha
  * alpha-num
+ * email
  * min:[number]
  * max:[number]
+ * same:[field_name]
 
 
 ## Custom Expressions & Messages
@@ -95,4 +103,13 @@ you can spacify conditional rules for a field
 ```php
  $rules['age'] = 'if:gender[Male](required|min:2|num)';
 ```
+
+## Comparison Rules
+
+you can also compare a field with another
+```php
+  $rules['password'] = 'required:min:8';
+  $rules['confirm_password'] = 'same:password';
+```
+
 
