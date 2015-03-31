@@ -41,7 +41,7 @@ class Validator {
      *
      * @var array
      */
-    private $expressions = [ ];
+    public  $expressions = [ ];
 
     /**
      * Custom RegExp error messages
@@ -86,7 +86,7 @@ class Validator {
         $this->expressions = array(
             'alpha'     => '#^([a-zA-Z\s])+$#',
             'num'       => '#^([0-9])+$#',
-            'alpha-num' => '#^([a-zA-Z0-9\s])$#',
+            'alpha-num' => '#^([a-zA-Z0-9\s])+$#',
         );
 
 
