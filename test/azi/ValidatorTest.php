@@ -39,6 +39,24 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase {
     }
 
 
+    public function testMinLengthValidation(){
+        $this->validator->validate(['title' => 'Lorem Ipsum Dummy Title'], ['title' => 'max:30']);
+        $this->assertTrue($this->validator->passed());
+    }
+
+
+    public function testMaxLengthValidation(){
+        $this->validator->validate(['description' => 'lorem ipsum dummy description'], ['description' => 'min:10']);
+        $this->assertTrue($this->validator->passed());
+    }
+
+
+    public function testConditionalValidation(){
+        $this->validator->validate(['gender' => 'female','age' => ''], ['gender' => 'required','age' => 'if:gender[male](required)']);
+        $this->assertTrue($this->validator->passed());
+    }
+
+
     public function testValidatorHasSessionKey(){
         $this->assertClassHasStaticAttribute("session_data_key","azi\\validator");
     }
