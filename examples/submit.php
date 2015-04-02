@@ -1,6 +1,7 @@
 <?php
 
-require_once( "../src/azi/Validator.php" );
+require_once( "vendor/autoload.php" );
+
 use azi\Validator;
 
 $v = new Validator();
