@@ -2,8 +2,11 @@
 
 This is a small PHP class that makes it easy to validate forms in your project specially larger forms. 
 
+[![Watch installation and basic usage](http://img.youtube.com/vi/Ngxk95xg5DM/0.jpg)](http://www.youtube.com/watch?v=Ngxk95xg5DM)
+
 
 ## Installation Guide:
+
 You can install **Validator** either via package download from github or via composer install. I encourage you to do the latter:
  
 ```json  
