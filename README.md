@@ -2,7 +2,7 @@
 
 This is a small PHP class that makes it easy to validate forms in your project specially larger forms. 
 
-[![Watch installation and basic usage](http://img.youtube.com/vi/Ngxk95xg5DM/0.jpg)](http://www.youtube.com/watch?v=Ngxk95xg5DM)
+[![Watch installation and basic usage](https://raw.githubusercontent.com/azeemhassni/validator/master/thumbnail.png)](http://www.youtube.com/watch?v=Ngxk95xg5DM)
 
 
 ## Installation Guide:
