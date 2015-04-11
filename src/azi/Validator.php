@@ -7,7 +7,7 @@ use azi\Exceptions\KeyExistsException;
  *
  * @package    azi
  * @author     Azi Baloch <http://www.azibaloch.com>
- * @version    1.0
+ * @version    2.0
  * @license    The MIT License (MIT)
  */
 
