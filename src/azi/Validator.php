@@ -9,25 +9,32 @@ use azi\Exceptions\KeyExistsException;
  * @author     Azi Baloch <http://www.azibaloch.com>
  * @version    1.0
  * @license    The MIT License (MIT)
- *             The MIT License (MIT)
- *             Copyright (c) [2015] [Azi Baloch]
- *             Permission is hereby granted, free of charge, to any person obtaining a copy
- *             of this software and associated documentation files (the "Software"), to deal
- *             in the Software without restriction, including without limitation the rights
- *             to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *             copies of the Software, and to permit persons to whom the Software is
- *             furnished to do so, subject to the following conditions:
- *             The above copyright notice and this permission notice shall be included in all
- *             copies or substantial portions of the Software.
- *             THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *             IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *             FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *             AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *             LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *             OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *             SOFTWARE.
-
  */
+
+/**
+ * -----------------------------------------------------------------------------
+ *                          The MIT License (MIT)
+ * -----------------------------------------------------------------------------
+ * Copyright (c) [2015] [Azi Baloch]
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
+
 class Validator {
 
 
@@ -80,7 +87,7 @@ class Validator {
     /**
      * @var array
      */
-    private $fields = [];
+    private $fields = [ ];
 
     /**
      *  Class Constructor
@@ -135,6 +142,7 @@ class Validator {
 
     /**
      * returns true if validation passed
+     *
      * @return bool
      */
     public function passed() {
@@ -147,9 +155,10 @@ class Validator {
 
     /**
      * this will return true if validation fails
+     *
      * @return bool
      */
-    public function failed(){
+    public function failed() {
         if ( count( self::$errors ) > 0 ) {
             return true;
         }
@@ -227,15 +236,15 @@ class Validator {
 
         // loop through rules array
         foreach ( $rules as $field => $ruleString ) {
-            $value    = $fields[ $field ];
+            $value = $fields[ $field ];
 
             // rules string to array required|email will bary [required,email]
 
 
-            if($this->isConditional($ruleString)) {
-                $ruleObj = $this->conditionalIf($ruleString);
+            if ( $this->isConditional( $ruleString ) ) {
+                $ruleObj = $this->conditionalIf( $ruleString );
 
-                if($this->isConditionMatches($fields, $ruleObj->field, $ruleObj->value)) {
+                if ( $this->isConditionMatches( $fields, $ruleObj->field, $ruleObj->value ) ) {
                     $ruleString = $ruleObj->rules;
                 } else {
                     // skip execution to next
@@ -271,9 +280,10 @@ class Validator {
      *
      * @return bool
      */
-    private function isConditional($rule){;
+    private function isConditional( $rule ) {
+        ;
 
-        if($this->findChar('if:', $rule)) {
+        if ( $this->findChar( 'if:', $rule ) ) {
             return true;
         }
 
@@ -286,12 +296,12 @@ class Validator {
      *
      * @return object
      */
-    private function conditionalIf($rule){
+    private function conditionalIf( $rule ) {
         preg_match( "#if:(.*)\\[(.*)\\]\\((.*)\\)#", $rule, $matches );
         $result = [
-            'field' => $matches[1],
-            'value' => $matches[2],
-            'rules' => $matches[3]
+            'field' => $matches[ 1 ],
+            'value' => $matches[ 2 ],
+            'rules' => $matches[ 3 ]
         ];
 
         return (object) $result;
@@ -326,6 +336,7 @@ class Validator {
 
     /**
      * Returns error message passed with a rule
+     *
      * @param $theRule
      *
      * @return null|mixed
@@ -343,6 +354,7 @@ class Validator {
 
     /**
      * explode/split rules
+     *
      * @param $rules
      *
      * @return array
@@ -358,6 +370,7 @@ class Validator {
 
     /**
      * Validate a rule against a custom registered expression
+     *
      * @param $field
      * @param $value
      * @param $rule
@@ -381,6 +394,7 @@ class Validator {
 
     /**
      * Validate a Rule against built-in rules
+     *
      * @param $field
      * @param $value
      * @param $rule
@@ -399,8 +413,8 @@ class Validator {
 
         if ( $this->isLengthRule( $rule ) ) {
             $ruleObject->setLength( $this->extractLength( $rule ) );;
-        } else if($this->isSameRule($rule)){
-            $ruleObject->prepareRule($this->fields, $this->extractSame($rule));
+        } else if ( $this->isSameRule( $rule ) ) {
+            $ruleObject->prepareRule( $this->fields, $this->extractSame( $rule ) );
         }
         $result = $ruleObject->run( $this->keyToLabel( $field ), $value, $message );
 
@@ -413,6 +427,7 @@ class Validator {
 
     /**
      * returns length from length rules eg. 6 from min:6 and 9 from max:9
+     *
      * @param $rule
      *
      * @return mixed
@@ -423,6 +438,7 @@ class Validator {
 
     /**
      * detects a rule is length rule
+     *
      * @param $rule
      *
      * @return bool
@@ -434,6 +450,7 @@ class Validator {
 
     /**
      * extracts rule name from rule string
+     *
      * @param $ruleName
      *
      * @return string
@@ -468,7 +485,7 @@ class Validator {
      * @return bool
      */
     private function isConditionMatches( $fields, $field, $value ) {
-        if($fields[$field] == $value ) {
+        if ( $fields[ $field ] == $value ) {
             return true;
         }
 
@@ -481,7 +498,7 @@ class Validator {
      * @return bool
      */
     private function isSameRule( $rule ) {
-        if($this->findChar('same:', $rule)){
+        if ( $this->findChar( 'same:', $rule ) ) {
             return true;
         }
 
@@ -494,7 +511,7 @@ class Validator {
      * @return mixed
      */
     private function extractSame( $rule ) {
-        return end(explode(':', $rule));
+        return end( explode( ':', $rule ) );
     }
 
 
