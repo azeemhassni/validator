@@ -40,7 +40,6 @@ class RequiredRule implements RuleInterface
 
         return false;
     }
-
     /**
      * Rule error message
      *
