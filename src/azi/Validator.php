@@ -1,38 +1,33 @@
 <?php namespace azi;
 
+use azi\Exceptions\KeyExistsException;
+
 /**
  * Class Validator
  *
- * @package azi
- * @author  Azi Baloch <http://www.azibaloch.com>
- * @version 1.0
- * @license The MIT License (MIT)
- *
- *   The MIT License (MIT)
- *
- *   Copyright (c) [2015] [Azi Baloch]
- *
- *   Permission is hereby granted, free of charge, to any person obtaining a copy
- *   of this software and associated documentation files (the "Software"), to deal
- *   in the Software without restriction, including without limitation the rights
- *   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *   copies of the Software, and to permit persons to whom the Software is
- *   furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- *
+ * @package    azi
+ * @author     Azi Baloch <http://www.azibaloch.com>
+ * @version    1.0
+ * @license    The MIT License (MIT)
+ *             The MIT License (MIT)
+ *             Copyright (c) [2015] [Azi Baloch]
+ *             Permission is hereby granted, free of charge, to any person obtaining a copy
+ *             of this software and associated documentation files (the "Software"), to deal
+ *             in the Software without restriction, including without limitation the rights
+ *             to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *             copies of the Software, and to permit persons to whom the Software is
+ *             furnished to do so, subject to the following conditions:
+ *             The above copyright notice and this permission notice shall be included in all
+ *             copies or substantial portions of the Software.
+ *             THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *             IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *             FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *             AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *             LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *             OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *             SOFTWARE.
+
  */
-
-
 class Validator {
 
 
@@ -41,7 +36,7 @@ class Validator {
      *
      * @var array
      */
-    public  $expressions = [ ];
+    public $expressions = [ ];
 
     /**
      * Custom RegExp error messages
@@ -75,39 +70,21 @@ class Validator {
     /**
      * @var array
      */
-    private $builtin_rules = [];
+    private $builtin_rules = [ ];
+
+    /**
+     * Base name space for Rule Classes
+     *
+     * @var string
+     */
+    protected $rulesBaseNamespace = 'azi\Rules';
 
     /**
      *  Class Constructor
      */
     public function __construct() {
-
-        // load built-in expressions
-        $this->expressions = array(
-            'alpha'     => '#^([a-zA-Z\s])+$#',
-            'num'       => '#^([0-9])+$#',
-            'alpha-num' => '#^([a-zA-Z0-9\s])+$#',
-        );
-
-
-        $this->builtin_rules = array(
-            array(
-                'id' => 'email',
-                'exp' => '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/',
-                'message' => 'Please enter a valid email address'
-            )
-        );
-
-
-        foreach($this->builtin_rules as $rule) {
-            $rule = (object) $rule;
-            $this->registerExpression($rule->id, $rule->exp, $rule->message);
-        }
-
-
         static::$instance = $this;
     }
-
 
 
     /**
@@ -128,7 +105,7 @@ class Validator {
             return true;
         }
 
-        throw new \Exception( "Expression key already exists" );
+        throw new KeyExistsException( "Expression key already exists" );
 
     }
 
@@ -138,7 +115,6 @@ class Validator {
      * @param null $message
      *
      * @return bool
-     * @throws \Exception
      */
     public function updateExpression( $key, $newExpression, $message = null ) {
         if ( $this->expressions[ $key ] ) {
@@ -151,14 +127,14 @@ class Validator {
             return true;
         }
 
-        throw new \Exception( "Expression dose not exists" );
+        return false;
     }
 
     /**
      * @return bool
      */
     public function passed() {
-        if ( count( $this->validation_errors ) < 1 ) {
+        if ( count( self::$errors ) < 1 ) {
             return true;
         }
 
@@ -175,7 +151,6 @@ class Validator {
     }
 
 
-
     /**
      * Get error message of a field
      *
@@ -183,27 +158,27 @@ class Validator {
      *
      * @return mixed
      */
-    public static function error( $fieldKey , $template = null) {
+    public static function error( $fieldKey, $template = null ) {
 
-        if(!session_id()) {
+        if ( ! session_id() ) {
             session_start();
         }
 
-        if(isset($_SESSION[static::$session_data_key])) {
-            if(count($_SESSION[static::$session_data_key]) > 0) {
+        if ( isset( $_SESSION[ static::$session_data_key ] ) ) {
+            if ( count( $_SESSION[ static::$session_data_key ] ) > 0 ) {
                 self::$errors = $_SESSION[ static::$session_data_key ];
-                unset($_SESSION[static::$session_data_key]);
+                unset( $_SESSION[ static::$session_data_key ] );
             }
         } else {
-            if(!is_null(static::$instance)) {
+            if ( ! is_null( static::$instance ) ) {
                 self::$errors = static::$instance->validation_errors;
             }
         }
 
         if ( isset( self::$errors[ $fieldKey ][ 'message' ] ) ) {
             $message = self::$errors[ $fieldKey ][ 'message' ];
-            if(!is_null($template)) {
-                $message = str_ireplace(":message",$message, $template);
+            if ( ! is_null( $template ) ) {
+                $message = str_ireplace( ":message", $message, $template );
             }
 
             return $message;
@@ -219,7 +194,7 @@ class Validator {
      *
      * @return bool
      */
-    public function findChar($char , $string){
+    public function findChar( $char, $string ) {
         if ( preg_match( "#{$char}#", $string ) ) {
             return true;
         }
@@ -277,7 +252,6 @@ class Validator {
                 }
 
 
-
                 $customMessage = [ ];
                 if ( strpos( $theRule, "--" ) ) {
                     $rcm     = explode( "--", $theRule ); // custom message for current rule
@@ -288,10 +262,10 @@ class Validator {
                     $customMessage[ $rcm[ 0 ] ] = $rcm[ 1 ];
                 }
 
-                if($this->findChar("same:",$theRule)) {
-                    $same_as_rule = explode(":", $theRule);
-                    $this->registerExpression($same_as_rule[0], "#^{$fields[$same_as_rule[1]]}$#", "{$this->keyToLabel($key)} must be same as {$this->keyToLabel($same_as_rule[1])}");
-                    $theRule = $same_as_rule[0];
+                if ( $this->findChar( "same:", $theRule ) ) {
+                    $same_as_rule = explode( ":", $theRule );
+                    $this->registerExpression( $same_as_rule[ 0 ], "#^{$fields[$same_as_rule[1]]}$#", "{$this->keyToLabel( $key )} must be same as {$this->keyToLabel( $same_as_rule[1] )}" );
+                    $theRule = $same_as_rule[ 0 ];
                 }
 
 
@@ -379,8 +353,8 @@ class Validator {
 
                 if ( strpos( $theRule, ':' ) ) {
                     $theRule = explode( ":", $theRule );
-                    $length = $theRule[1];
-                    $theRule = $theRule[0];
+                    $length  = $theRule[ 1 ];
+                    $theRule = $theRule[ 0 ];
                     if ( strtolower( $theRule ) == "min" ) {
                         if ( ! empty( $customMessage[ 'min' ] ) ) {
                             $theMessage = $customMessage[ 'min' ];
@@ -418,10 +392,9 @@ class Validator {
                 /* Custom Expressions */
                 if ( array_key_exists( $theRule, $this->expressions ) ) {
 
-
                     if ( ! preg_match( $this->expressions[ $theRule ], $field ) ) {
-                        if(isset($customMessage[$theRule])) {
-                            $error_message = $customMessage[$theRule];
+                        if ( isset( $customMessage[ $theRule ] ) ) {
+                            $error_message = $customMessage[ $theRule ];
                         } else if ( array_key_exists( $theRule, $this->error_messages ) ) {
                             $error_message = $this->error_messages[ $theRule ];
                         } else {
@@ -455,19 +428,176 @@ class Validator {
         return ucwords( str_replace( [ '-', '_', '+' ], " ", $key ) );
     }
 
+    /**
+     * print errors to string;
+     */
+    public function toString() {
 
-    public function goBackWithErrors(){
-        if(!session_id()) {
+        print_r( static::$errors );
+
+        return;
+        echo "<pre>";
+        foreach ( static::$errors as $key => $error ) {
+            echo "<b />" . ucwords( $key ) . "</b> -----> &nbsp;&nbsp;" . $error . " \n";
+        }
+        echo "</pre>";
+    }
+
+    public function goBackWithErrors() {
+        if ( ! session_id() ) {
             session_start();
         }
 
-        $_SESSION[static::$session_data_key] = $this->validation_errors;
+        $_SESSION[ static::$session_data_key ] = $this->validation_errors;
 
-        header('Location: ' . $_SERVER['HTTP_REFERER']);
+        header( 'Location: ' . $_SERVER[ 'HTTP_REFERER' ] );
         exit;
     }
 
+    /**
+     * @param $post
+     * @param $rules
+     *
+     * @throws \Exception
+     */
+    public function test( $post, $rules ) {
 
+        $this->registerExpression( 'azeem', '#^([1-5])+$#', 'Number must be between 1 to 5' );
+
+        foreach ( $rules as $field => $ruleString ) {
+            $value    = $post[ $field ];
+            $theRules = $this->extractRules( $ruleString );
+            foreach ( $theRules as $theRule ) {
+                $message = $this->extractCustomMessage( $theRule );
+                $this->validateByRule( $field, $value, $theRule, $message );
+                if ( array_key_exists( $theRule, $this->expressions ) ) {
+                    $this->validateAgainstExpression( $field, $value, $theRule, $message );
+                }
+            }
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * @param $theRule
+     *
+     * @return null|mixed
+     */
+    public function extractCustomMessage( $theRule ) {
+
+        if ( $this->findChar( '--', $theRule ) ) {
+            return end( explode( '--', $theRule ) );
+        }
+
+        return null;
+
+    }
+
+
+    /**
+     * @param $rules
+     *
+     * @return array
+     */
+    public function extractRules( $rules ) {
+        if ( $this->findChar( '|', $rules ) ) {
+            return explode( '|', $rules );
+        }
+
+        return [ $rules ];
+    }
+
+    /**
+     * @param $field
+     * @param $value
+     * @param $rule
+     * @param null $message
+     *
+     * @return bool
+     */
+    private function validateAgainstExpression( $field, $value, $rule, $message = null ) {
+        if ( preg_match( $this->expressions[ $rule ], $value ) ) {
+            return true;
+        }
+
+        if ( ! $message ) {
+            $message = $this->error_messages[ $rule ];
+        }
+
+        static::$errors[ $field ] = $message;
+
+        return false;
+    }
+
+    /**
+     * @param $field
+     * @param $value
+     * @param $rule
+     * @param null $message
+     *
+     * @return mixed
+     */
+    private function validateByRule( $field, $value, $rule, $message = null ) {
+
+        $ruleClassName = $this->ruleToClassName( $this->getRuleName( $rule ) );
+
+        if ( ! class_exists( $ruleClassName ) ) {
+            return false;
+        }
+
+        $ruleObject = new $ruleClassName();
+
+        if ( $this->isLengthRule( $rule ) ) {
+            $ruleObject->setLength( $this->extractLength( $rule ) );;
+        }
+        $result = $ruleObject->run( $this->keyToLabel( $field ), $value, $message );
+
+        if ( ! $result ) {
+            static::$errors[ $field ] = $ruleObject->message();
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param $rule
+     *
+     * @return mixed
+     */
+    private function extractLength( $rule ) {
+        return end( explode( ':', $rule ) );
+    }
+
+    /**
+     * @param $rule
+     *
+     * @return bool
+     */
+    private function isLengthRule( $rule ) {
+        return $this->findChar( 'min:', $rule ) || $this->findChar( 'max:', $rule );
+    }
+
+
+    /**
+     * @param $ruleName
+     *
+     * @return string
+     */
+    private function getRuleName( $ruleName ) {
+        if ( $this->findChar( '--', $ruleName ) ) {
+            $ruleName = explode( '--', $ruleName )[ 0 ];
+        } else if ( $this->findChar( ':', $ruleName ) ) {
+            $ruleName = explode( ':', $ruleName )[ 0 ];
+        }
+
+        return ucwords( $ruleName ) . "Rule";
+    }
+
+    private function ruleToClassName( $rule ) {
+        return $this->rulesBaseNamespace . '\\' . $rule;
+    }
 
 
 }

@@ -13,6 +13,8 @@
         "psr-4": {
             "azi\\" : ["src/azi/"]
         }
+    },
+    "require-dev" : {
     }
 }
 
