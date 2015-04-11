@@ -31,6 +31,8 @@ use azi\Exceptions\KeyExistsException;
 class Validator {
 
 
+    const SESSION_DATA_KEY = 'form_validation_errors';
+
     /**
      * RegExp patterns
      *
@@ -62,10 +64,6 @@ class Validator {
      */
     private static $instance = null;
 
-    /**
-     * @var string
-     */
-    private static $session_data_key = "form_validation_errors";
 
     /**
      * @var array
@@ -131,10 +129,23 @@ class Validator {
     }
 
     /**
+     * returns true if validation passed
      * @return bool
      */
     public function passed() {
         if ( count( self::$errors ) < 1 ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * this will return true if validation fails
+     * @return bool
+     */
+    public function failed(){
+        if ( count( self::$errors ) > 0 ) {
             return true;
         }
 
@@ -147,7 +158,7 @@ class Validator {
      * @return array
      */
     public function getErrors() {
-        return $this->validation_errors;
+        return self::$errors;
     }
 
 
@@ -164,19 +175,15 @@ class Validator {
             session_start();
         }
 
-        if ( isset( $_SESSION[ static::$session_data_key ] ) ) {
-            if ( count( $_SESSION[ static::$session_data_key ] ) > 0 ) {
-                self::$errors = $_SESSION[ static::$session_data_key ];
-                unset( $_SESSION[ static::$session_data_key ] );
-            }
-        } else {
-            if ( ! is_null( static::$instance ) ) {
-                self::$errors = static::$instance->validation_errors;
+        if ( isset( $_SESSION[ static::SESSION_DATA_KEY ] ) ) {
+            if ( count( $_SESSION[ static::SESSION_DATA_KEY ] ) > 0 ) {
+                self::$errors = $_SESSION[ static::SESSION_DATA_KEY ];
+                unset( $_SESSION[ static::SESSION_DATA_KEY ] );
             }
         }
 
-        if ( isset( self::$errors[ $fieldKey ][ 'message' ] ) ) {
-            $message = self::$errors[ $fieldKey ][ 'message' ];
+        if ( isset( self::$errors[ $fieldKey ] ) ) {
+            $message = self::$errors[ $fieldKey ];
             if ( ! is_null( $template ) ) {
                 $message = str_ireplace( ":message", $message, $template );
             }
@@ -211,211 +218,87 @@ class Validator {
      */
     public function validate( $fields, $rules ) {
 
+        // loop through rules array
+        foreach ( $rules as $field => $ruleString ) {
+            $value    = $fields[ $field ];
 
-        $return = [ ];
+            // rules string to array required|email will bary [required,email]
 
-        foreach ( $fields as $key => $field ) {
 
-            if ( ! array_key_exists( $key, $rules ) ) {
-                continue;
-            }
+            if($this->isConditional($ruleString)) {
+                $ruleObj = $this->conditionalIf($ruleString);
 
-            $r       = $rules[ $key ];
-            $matches = [ ];
-            $not     = false;
-            if ( preg_match( '#if:#', $r ) ) {
-
-                preg_match( "#if:(.*)\\[\\!(.*)\\]:(.*)\\[!(.*)\\]\\((.*)\\)#", $r, $matches );
-
-                if ( count( $matches ) < 1 ) {
-                    preg_match( "#if:(.*)\\[(.*)\\]\\((.*)\\)#", $r, $matches );
+                if($this->isConditionMatches($fields, $ruleObj->field, $ruleObj->value)) {
+                    $ruleString = $ruleObj->rules;
                 } else {
-                    $not = true;
+                    // skip execution to next
+                    continue;
                 }
-
-                $r = end( $matches );
-
             }
 
-            if ( ! strpos( $r, "|" ) ) {
-                $r .= "|IGNORE_ME5";
-            }
-
-
-            $theRules = explode( "|", $r );
-
+            $theRules = $this->extractRules( $ruleString );
 
             foreach ( $theRules as $theRule ) {
 
-                if ( $theRule == "IGNORE_ME5" ) {
-                    continue;
-                }
+                // extract custom messages passed with rule eg. email--Invalid Email
+                $message = $this->extractCustomMessage( $theRule );
+
+                $this->validateByRule( $field, $value, $theRule, $message );
 
 
-                $customMessage = [ ];
-                if ( strpos( $theRule, "--" ) ) {
-                    $rcm     = explode( "--", $theRule ); // custom message for current rule
-                    $theRule = $rcm[ 0 ];
-                    if ( strpos( $rcm[ 0 ], ":" ) ) {
-                        $rcm[ 0 ] = explode( ":", $rcm[ 0 ] )[ 0 ];
-                    }
-                    $customMessage[ $rcm[ 0 ] ] = $rcm[ 1 ];
-                }
-
-                if ( $this->findChar( "same:", $theRule ) ) {
-                    $same_as_rule = explode( ":", $theRule );
-                    $this->registerExpression( $same_as_rule[ 0 ], "#^{$fields[$same_as_rule[1]]}$#", "{$this->keyToLabel( $key )} must be same as {$this->keyToLabel( $same_as_rule[1] )}" );
-                    $theRule = $same_as_rule[ 0 ];
-                }
-
-
-                if ( count( $matches ) > 0 ) {
-
-                    if ( $not ) {
-                        if ( $fields[ $matches[ 1 ] ] == $matches[ 2 ] && $fields[ $matches[ 3 ] ] == $matches[ 4 ] ) {
-                            continue;
-                        }
-                    } else {
-                        if ( $fields[ $matches[ 1 ] ] != $matches[ 2 ] ) {
-                            continue;
-                        }
-                    }
-                }
-
-
-                if ( strtolower( $theRule ) == "required" ) {
-                    if ( ! empty( $customMessage[ 'required' ] ) ) {
-                        $theMessage = $customMessage[ 'required' ];
-                    } else {
-                        $theMessage = $this->keyToLabel( $key ) . ' is required';
-                    }
-                    if ( $field == "" ) {
-                        $return[ $key ] = [
-                            'error'   => 'required',
-                            'message' => $theMessage
-                        ];
-                        continue;
-                    }
-                }
-
-
-                if ( strtolower( $theRule ) == "alpha" ) {
-                    if ( ! preg_match( $this->expressions[ 'alpha' ], $field ) ) {
-                        if ( ! empty( $customMessage[ 'alpha' ] ) ) {
-                            $theMessage = $customMessage[ 'alpha' ];
-                        } else {
-                            $theMessage = $this->keyToLabel( $key ) . ' must not contain numbers and special characters';
-                        }
-                        $return[ $key ] = [
-                            'error'   => 'alpha',
-                            'message' => $theMessage
-                        ];
-                        continue;
-                    }
-                }
-
-                if ( strtolower( $theRule ) == "num" ) {
-
-                    if ( ! empty( $customMessage[ 'num' ] ) ) {
-                        $theMessage = $customMessage[ 'num' ];
-                    } else {
-                        $theMessage = $this->keyToLabel( $key ) . ' may only contain numbers';
-                    }
-
-                    if ( ! preg_match( $this->expressions[ 'num' ], $field ) ) {
-                        $return[ $key ] = [
-                            'error'   => 'num',
-                            'message' => $theMessage
-                        ];
-                        continue;
-                    }
-                }
-
-
-                if ( strtolower( $theRule ) == "alpha-num" ) {
-
-                    if ( ! empty( $customMessage[ 'alpha-num' ] ) ) {
-                        $theMessage = $customMessage[ 'alpha-num' ];
-                    } else {
-                        $theMessage = $this->keyToLabel( $key ) . ' may only contain alpha numeric characters';
-                    }
-
-
-                    if ( ! preg_match( $this->expressions[ 'alpha-num' ], $field ) ) {
-                        $return[ $key ] = [
-                            'error'   => 'alpha-num',
-                            'message' => $theMessage
-                        ];
-                        continue;
-                    }
-                }
-
-
-                if ( strpos( $theRule, ':' ) ) {
-                    $theRule = explode( ":", $theRule );
-                    $length  = $theRule[ 1 ];
-                    $theRule = $theRule[ 0 ];
-                    if ( strtolower( $theRule ) == "min" ) {
-                        if ( ! empty( $customMessage[ 'min' ] ) ) {
-                            $theMessage = $customMessage[ 'min' ];
-                        } else {
-                            $theMessage = $this->keyToLabel( $key ) . ' must be at least ' . $length . " characters long";
-                        }
-
-                        if ( strlen( $field ) < $length ) {
-                            $return[ $key ] = [
-                                'error'   => 'min',
-                                'message' => $theMessage
-                            ];
-                            continue;
-                        }
-                    }
-
-                    if ( strtolower( $theRule ) == "max" ) {
-
-                        if ( ! empty( $customMessage[ 'max' ] ) ) {
-                            $theMessage = $customMessage[ 'max' ];
-                        } else {
-                            $theMessage = $this->keyToLabel( $key ) . ' must be less than ' . $length . " characters";
-                        }
-
-                        if ( strlen( $field ) > $length ) {
-                            $return[ $key ] = [
-                                'error'   => 'max',
-                                'message' => $theMessage
-                            ];
-                            continue;
-                        }
-                    }
-                }
-
-                /* Custom Expressions */
+                // check if current rule is registered by user at runtime
                 if ( array_key_exists( $theRule, $this->expressions ) ) {
-
-                    if ( ! preg_match( $this->expressions[ $theRule ], $field ) ) {
-                        if ( isset( $customMessage[ $theRule ] ) ) {
-                            $error_message = $customMessage[ $theRule ];
-                        } else if ( array_key_exists( $theRule, $this->error_messages ) ) {
-                            $error_message = $this->error_messages[ $theRule ];
-                        } else {
-                            $error_message = $this->keyToLabel( $key ) . ' dose\'t match the required pattern';
-                        }
-                        $return[ $key ] = [
-                            'error'   => $theRule,
-                            'message' => $error_message
-                        ];
-                        continue;
-                    }
+                    // run the validation against Runtime registered regular expression
+                    $this->validateAgainstExpression( $field, $value, $theRule, $message );
                 }
 
             }
 
         }
 
-        $this->validation_errors = $return;
-
         return $this;
     }
+
+    /**
+     * @param $rule
+     *
+     * @return bool
+     */
+    private function isConditional($rule){;
+
+        if($this->findChar('if:', $rule)) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    /**
+     * @param $rules
+     *
+     * @return mixed
+     */
+    private function conditionalRules( $rules ) {
+        return $this->conditionalIf($rules)->rules;
+    }
+
+    /**
+     * @param $rule
+     *
+     * @return object
+     */
+    private function conditionalIf($rule){
+        preg_match( "#if:(.*)\\[(.*)\\]\\((.*)\\)#", $rule, $matches );
+        $result = [
+            'field' => $matches[1],
+            'value' => $matches[2],
+            'rules' => $matches[3]
+        ];
+
+        return (object) $result;
+    }
+
 
     /**
      * Convert an array key to Label eg. full_name to Full Name
@@ -429,58 +312,22 @@ class Validator {
     }
 
     /**
-     * print errors to string;
+     * save errors in session and go back to form
      */
-    public function toString() {
-
-        print_r( static::$errors );
-
-        return;
-        echo "<pre>";
-        foreach ( static::$errors as $key => $error ) {
-            echo "<b />" . ucwords( $key ) . "</b> -----> &nbsp;&nbsp;" . $error . " \n";
-        }
-        echo "</pre>";
-    }
-
     public function goBackWithErrors() {
         if ( ! session_id() ) {
             session_start();
         }
 
-        $_SESSION[ static::$session_data_key ] = $this->validation_errors;
+        $_SESSION[ static::SESSION_DATA_KEY ] = self::$errors;
+
 
         header( 'Location: ' . $_SERVER[ 'HTTP_REFERER' ] );
         exit;
     }
 
     /**
-     * @param $post
-     * @param $rules
-     *
-     * @throws \Exception
-     */
-    public function test( $post, $rules ) {
-
-        $this->registerExpression( 'azeem', '#^([1-5])+$#', 'Number must be between 1 to 5' );
-
-        foreach ( $rules as $field => $ruleString ) {
-            $value    = $post[ $field ];
-            $theRules = $this->extractRules( $ruleString );
-            foreach ( $theRules as $theRule ) {
-                $message = $this->extractCustomMessage( $theRule );
-                $this->validateByRule( $field, $value, $theRule, $message );
-                if ( array_key_exists( $theRule, $this->expressions ) ) {
-                    $this->validateAgainstExpression( $field, $value, $theRule, $message );
-                }
-            }
-        }
-
-        return $this;
-    }
-
-
-    /**
+     * Returns error message passed with a rule
      * @param $theRule
      *
      * @return null|mixed
@@ -497,11 +344,13 @@ class Validator {
 
 
     /**
+     * explode/split rules
      * @param $rules
      *
      * @return array
      */
     public function extractRules( $rules ) {
+
         if ( $this->findChar( '|', $rules ) ) {
             return explode( '|', $rules );
         }
@@ -510,6 +359,7 @@ class Validator {
     }
 
     /**
+     * Validate a rule against a custom registered expression
      * @param $field
      * @param $value
      * @param $rule
@@ -532,6 +382,7 @@ class Validator {
     }
 
     /**
+     * Validate a Rule against built-in rules
      * @param $field
      * @param $value
      * @param $rule
@@ -540,7 +391,6 @@ class Validator {
      * @return mixed
      */
     private function validateByRule( $field, $value, $rule, $message = null ) {
-
         $ruleClassName = $this->ruleToClassName( $this->getRuleName( $rule ) );
 
         if ( ! class_exists( $ruleClassName ) ) {
@@ -562,6 +412,7 @@ class Validator {
     }
 
     /**
+     * returns length from length rules eg. 6 from min:6 and 9 from max:9
      * @param $rule
      *
      * @return mixed
@@ -571,6 +422,7 @@ class Validator {
     }
 
     /**
+     * detects a rule is length rule
      * @param $rule
      *
      * @return bool
@@ -581,6 +433,7 @@ class Validator {
 
 
     /**
+     * extracts rule name from rule string
      * @param $ruleName
      *
      * @return string
@@ -595,8 +448,31 @@ class Validator {
         return ucwords( $ruleName ) . "Rule";
     }
 
+    /**
+     * converts a rule name to its corresponding class name
+     * eg. alpha to azi\Rules\AlphaRule
+     *
+     * @param $rule
+     *
+     * @return string
+     */
     private function ruleToClassName( $rule ) {
         return $this->rulesBaseNamespace . '\\' . $rule;
+    }
+
+    /**
+     * @param $fields
+     * @param $field
+     * @param $value
+     *
+     * @return bool
+     */
+    private function isConditionMatches( $fields, $field, $value ) {
+        if($fields[$field] == $value ) {
+            return true;
+        }
+
+        return false;
     }
 
 
