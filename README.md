@@ -69,7 +69,7 @@ you can wrap error messages with custom HTML markup
  * required
  * num
  * alpha
- * alpha-num
+ * alnum
  * email
  * min:[number]
  * max:[number]
