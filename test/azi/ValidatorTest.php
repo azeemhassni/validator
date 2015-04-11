@@ -56,11 +56,6 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase {
         $this->assertTrue($this->validator->passed());
     }
 
-
-    public function testValidatorHasSessionKey(){
-        $this->assertClassHasStaticAttribute("session_data_key","azi\\validator");
-    }
-
     /**
      * @expectedException \Exception
      */

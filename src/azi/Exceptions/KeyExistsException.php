@@ -11,4 +11,4 @@ namespace azi\Exceptions;
 
 class KeyExistsException extends \Exception {
 
-} 
+}

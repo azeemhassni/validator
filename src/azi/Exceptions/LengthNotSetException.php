@@ -7,4 +7,4 @@
  */
 class LengthNotSetException extends \Exception{
 
-} 
+}

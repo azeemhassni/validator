@@ -23,4 +23,4 @@ interface RuleInterface
      * @return mixed
      */
     public function message();
-} 
+}

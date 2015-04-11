@@ -77,4 +77,4 @@ class MaxRule implements RuleInterface
         $this->length = $length;
     }
 
-} 
+}

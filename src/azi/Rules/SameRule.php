@@ -8,7 +8,8 @@ use azi\RuleInterface;
  *
  * @package azi\Rules
  */
-class SameRule implements RuleInterface {
+class SameRule implements RuleInterface
+{
 
     /**
      * Holds the fields array

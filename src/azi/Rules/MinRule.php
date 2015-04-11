@@ -9,7 +9,8 @@ use azi\RuleInterface;
  *
  * @package azi\Rules
  */
-class MinRule implements RuleInterface {
+class MinRule implements RuleInterface
+{
 
     /**
      * Field label
