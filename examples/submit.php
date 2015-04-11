@@ -5,33 +5,22 @@ require_once( "../vendor/autoload.php" );
 use azi\Validator;
 
 $v = new Validator();
-//
-//$post  = [ 'the_field' => '123A' ];
-//$rules = [ 'the_field' => 'num' ];
-//
-//var_dump( Validator::error( 'the_field' ) );
-//var_dump( $v->validate( $post, $rules )->passed() );
-//
-//exit;
-
 
 if ( $_POST ) {
 
     $rules = array(
         'email'            => 'email|required',
         'password'         => 'required',
-        'confirm_password' => 'if:password[123456](required|same:password)',
+        'confirm_password' => 'same:password|required',
     );
-    unset($rules['email'],$rules['password']);
 
     if ( $v->validate( $_POST, $rules )->failed() ) {
-       $v->goBackWithErrors();
-    } else {
-        exit("Validation Passed");
+        $v->goBackWithErrors();
     }
 
 
+    echo "data validated do whatever you want here...";
 
-    // validation passed do other stuffs here
+
 
 }

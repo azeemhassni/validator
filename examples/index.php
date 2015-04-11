@@ -12,7 +12,7 @@ use azi\Validator;
         body {
             font-family: "Segoe UI";
         }
-        input[type=text] {
+        input[type=text] , input[type=password]{
             padding: 5px 6px;
             border: 1px solid #ccc;
             display: block;
@@ -56,13 +56,13 @@ use azi\Validator;
     </p>
     <p>
         <label>Password :
-            <input type="text" name="password">
+            <input type="password" name="password">
         </label>
         <?= Validator::error('password') ? Validator::error('password', '<span class="error">:message</span>') : ""; ?>
     </p>
     <p>
         <label>Confirm Password :
-            <input type="text" name="confirm_password">
+            <input type="password" name="confirm_password">
         </label>
         <?= Validator::error('confirm_password') ? Validator::error('confirm_password', '<span class="error">:message</span>') : ""; ?>
     </p>
