@@ -78,6 +78,11 @@ class Validator {
     protected $rulesBaseNamespace = 'azi\Rules';
 
     /**
+     * @var array
+     */
+    private $fields = [];
+
+    /**
      *  Class Constructor
      */
     public function __construct() {
@@ -218,6 +223,8 @@ class Validator {
      */
     public function validate( $fields, $rules ) {
 
+        $this->fields = $fields;
+
         // loop through rules array
         foreach ( $rules as $field => $ruleString ) {
             $value    = $fields[ $field ];
@@ -273,15 +280,6 @@ class Validator {
         return false;
     }
 
-
-    /**
-     * @param $rules
-     *
-     * @return mixed
-     */
-    private function conditionalRules( $rules ) {
-        return $this->conditionalIf($rules)->rules;
-    }
 
     /**
      * @param $rule
@@ -401,6 +399,8 @@ class Validator {
 
         if ( $this->isLengthRule( $rule ) ) {
             $ruleObject->setLength( $this->extractLength( $rule ) );;
+        } else if($this->isSameRule($rule)){
+            $ruleObject->prepareRule($this->fields, $this->extractSame($rule));
         }
         $result = $ruleObject->run( $this->keyToLabel( $field ), $value, $message );
 
@@ -473,6 +473,28 @@ class Validator {
         }
 
         return false;
+    }
+
+    /**
+     * @param $rule
+     *
+     * @return bool
+     */
+    private function isSameRule( $rule ) {
+        if($this->findChar('same:', $rule)){
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $rule
+     *
+     * @return mixed
+     */
+    private function extractSame( $rule ) {
+        return end(explode(':', $rule));
     }
 
 

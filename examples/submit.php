@@ -23,10 +23,9 @@ if ( $_POST ) {
         'confirm_password' => 'if:password[123456](required|same:password)',
     );
     unset($rules['email'],$rules['password']);
-    $v->validate( $_POST, $rules );
-    var_dump($v->passed());
-    if ( ! $v->passed() ) {
-       # $v->goBackWithErrors();
+
+    if ( $v->validate( $_POST, $rules )->failed() ) {
+       $v->goBackWithErrors();
     } else {
         exit("Validation Passed");
     }
