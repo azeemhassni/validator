@@ -31,10 +31,8 @@ use azi\Exceptions\KeyExistsException;
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- *
+
  */
-
-
 class Validator {
 
 
@@ -433,7 +431,9 @@ class Validator {
      * @return mixed
      */
     private function extractLength( $rule ) {
-        return end( explode( ':', $rule ) );
+        $rule = explode( ':', $rule );
+
+        return end( $rule );
     }
 
     /**
@@ -511,7 +511,9 @@ class Validator {
      * @return mixed
      */
     private function extractSame( $rule ) {
-        return end( explode( ':', $rule ) );
+        $rule = explode( ':', $rule );
+
+        return end( $rule );
     }
 
 
