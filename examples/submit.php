@@ -1,5 +1,5 @@
 <?php
-
+var_dump(trim("              "));exit;
 require_once( "../vendor/autoload.php" );
 
 use azi\Validator;

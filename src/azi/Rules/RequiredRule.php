@@ -34,12 +34,9 @@ class RequiredRule implements RuleInterface
     public function run( $field, $value, $message = null ) {
         $this->field   = $field;
         $this->message = $message;
-        $value = trim($value);
-        if ( ! empty( $value )  ) {
-            return true;
-        }
+        $value = preg_replace('/^[\pZ\pC]+|[\pZ\pC]+$/u', '', $value);
 
-        return false;
+        return !empty($value);
     }
     /**
      * Rule error message
