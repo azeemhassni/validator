@@ -1,7 +1,5 @@
 <?php namespace azi;
 
-require "../../src/azi/Validator.php";
-
 /**
  * @property Validator validator
  */
@@ -56,15 +54,12 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase {
         $this->assertTrue($this->validator->passed());
     }
 
-
-    public function testValidatorHasSessionKey(){
-        $this->assertClassHasStaticAttribute("session_data_key","azi\\validator");
-    }
-
     /**
-     * @expectedException \Exception
+     * @expectedException azi\Exceptions\KeyExistsException
      */
     public function testThrownExceptionIfExistingExpressionKeyPassed(){
+        $this->validator->registerExpression("alpha","#^[a-zA-Z]$#");
+        // lets try to override by registering the expression again
         $this->validator->registerExpression("alpha","#^[a-zA-Z]$#");
     }
 
