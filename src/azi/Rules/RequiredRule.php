@@ -34,7 +34,8 @@ class RequiredRule implements RuleInterface
     public function run( $field, $value, $message = null ) {
         $this->field   = $field;
         $this->message = $message;
-        if ( ! empty( trim($value) )  ) {
+        $value = trim($value);
+        if ( ! empty( $value )  ) {
             return true;
         }
 
