@@ -1,9 +1,5 @@
 <?php namespace azi;
 
-
-
-require "../../vendor/autoload.php";
-
 /**
  * @property Validator validator
  */
