@@ -1,6 +1,8 @@
 # PHP Server Side Form Validation
 
-This is a small PHP class that makes it easy to validate forms in your project specially larger forms. 
+[![Build Status](https://travis-ci.org/azeemhassni/validator.svg?branch=v2.0)](https://travis-ci.org/azeemhassni/validator)
+
+This is a small PHP class that makes it easy to validate forms in your project specially larger forms.
 
 [![Watch installation and basic usage](https://raw.githubusercontent.com/azeemhassni/validator/master/thumbnail.png)](http://www.youtube.com/watch?v=Ngxk95xg5DM)
 
