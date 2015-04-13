@@ -15,7 +15,7 @@ You can install **Validator** either via package download from github or via com
 ```json  
 { 
   "require": {
-    "azi/validator": "dev-master"
+    "azi/validator": "1.*"
   }
 } 
 ```
