@@ -203,7 +203,7 @@ class Validator {
             return $message;
         }
 
-        return false;
+        return "";
     }
 
 

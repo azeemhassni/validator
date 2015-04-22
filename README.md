@@ -58,7 +58,7 @@ if ( !$v->passed() ) {
  <label>Name :
       <input type="text" name="name">
  </label>
- <?= Validator::error('name') ? Validator::error('name') : ""; ?>
+ <?=  Validator::error('name'); ?>
 ```
 
 you can wrap error messages with custom HTML markup
