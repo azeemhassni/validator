@@ -31,8 +31,8 @@ use azi\Exceptions\KeyExistsException;
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
-
  */
+
 class Validator {
 
 
@@ -76,7 +76,7 @@ class Validator {
     private $builtin_rules = [ ];
 
     /**
-     * Base name space for Rule Classes
+     * Base namespace for Rule Classes
      *
      * @var string
      */
@@ -101,7 +101,7 @@ class Validator {
      * @param null $message
      *
      * @return bool
-     * @throws \Exception
+     * @throws KeyExistsException
      */
     public function registerExpression( $key, $expression, $message = null ) {
         if ( ! isset( $this->expressions[ $key ] ) ) {
@@ -408,7 +408,6 @@ class Validator {
         }
 
         $ruleObject = new $ruleClassName();
-
         if ( $this->isLengthRule( $rule ) ) {
             $ruleObject->setLength( $this->extractLength( $rule ) );;
         } else if ( $this->isSameRule( $rule ) ) {
@@ -450,6 +449,8 @@ class Validator {
 
     /**
      * extracts rule name from rule string
+     * this will will remove any length arguments or custom messages from rule
+     * e.g max:20 will be max and email--Invalid Email will be email
      *
      * @param $ruleName
      *
@@ -516,5 +517,12 @@ class Validator {
         return end( $rule );
     }
 
+
+    /**
+     * clear validator errors
+     */
+    public function clear(){
+        static::$errors = array();
+    }
 
 }
