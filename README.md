@@ -103,7 +103,7 @@ registerExpression method takes 3 arguments
 you can also pass a custom error message with each rule
 
 ```php
- $rules['full_name'] = "required--Please Enter your name|alpha-- Please don't use special charators and numbers";
+ $rules['full_name'] = "required--Please Enter your name";
 ```
 
 ## Conditional Rules
