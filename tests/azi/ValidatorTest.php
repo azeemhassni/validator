@@ -5,9 +5,12 @@
  */
 class ValidatorTest extends \PHPUnit_Framework_TestCase {
 
-
     public function setUp(){
         $this->validator = new Validator();
+    }
+
+    public function tearDown(){
+        $this->validator->clear();
     }
 
     public function testValidatorIsValidatingEmails(){
@@ -27,7 +30,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testValidatorIsValidatingAlphaNumeric(){
-        $this->validator->validate(['bio' => 'My Name is Azi and i am 21 years old'], ['bio' => 'alpha-num']);
+        $this->validator->validate(['username' => 'john'], ['username' => 'alnum']);
         $this->assertTrue($this->validator->passed());
     }
 
@@ -66,6 +69,16 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase {
 
     public function testFindCharMethodWorking(){
         $this->assertTrue($this->validator->findChar("if:","if:country[Pakistan](required|alpha)"));
+    }
+
+    public function testValidatorIsValidatingIPFields(){
+        $this->validator->validate(['ip' => '127.0.0.1'],['ip' => 'ip']);
+        $this->assertTrue($this->validator->passed());
+    }
+
+    public function testValidatorIsValidatingUrlField(){
+        $this->validator->validate(['url' => 'http://example.com'],['url' => 'url']);
+        $this->assertTrue($this->validator->passed());
     }
 
 }

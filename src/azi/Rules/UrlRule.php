@@ -1,22 +1,18 @@
-<?php namespace azi\Rules;
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Azeem
+ * Date: 5/3/2015
+ * Time: 9:29 PM
+ */
+
+namespace azi\Rules;
 
 
 use azi\RuleInterface;
 
-/**
- * Class AlnumRule
- *
- * @package azi\Rules
- */
-class AlnumRule implements RuleInterface
-{
+class UrlRule implements RuleInterface {
 
-    /**
-     * RegExp pattern
-     *
-     * @var string
-     */
-    protected $pattern = '#^([a-zA-Z0-9])+$#';
 
     /**
      * @var null
@@ -40,11 +36,8 @@ class AlnumRule implements RuleInterface
     public function run( $field, $value, $message = null ) {
         $this->field   = $field;
         $this->message = $message;
-        if ( preg_match( $this->pattern, $value ) ) {
-            return true;
-        }
 
-        return false;
+        return filter_var( $value, FILTER_VALIDATE_URL ) !== false;
     }
 
     /**
@@ -57,6 +50,6 @@ class AlnumRule implements RuleInterface
             return $this->message;
         }
 
-        return $this->field . " must not contain special characters";
+        return $this->field . " must be a valid URL";
     }
 }
