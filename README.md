@@ -27,7 +27,7 @@ to get started
 * require composer autoloader 
 
 ```php
-require __DIR__ . '/../vendor/autoload.php';
+require 'vendor/autoload.php';
 ```
 
 * Instantiate the Validator class
