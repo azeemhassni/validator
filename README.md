@@ -74,6 +74,8 @@ you can wrap error messages with custom HTML markup
  * alpha
  * alnum
  * email
+ * ip
+ * url
  * min:[number]
  * max:[number]
  * same:[field_name]
