@@ -96,7 +96,9 @@ registerExpression method takes 3 arguments
 * pattern - the RegExp string
 * message [optional] - the error message to be retured if the validation fails
 
-```Validator::registerExpression($expressionID , $pattern, $message)```
+```php 
+Validator::registerExpression($expressionID , $pattern, $message)
+```
 
 
 * Custom Messages
