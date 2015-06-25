@@ -80,9 +80,9 @@ you can wrap error messages with custom HTML markup
  * email
  * ip
  * url
- * min:[number]
- * max:[number]
- * same:[field_name]
+ * min:number
+ * max:number
+ * same:field_name
 
 
 ## Custom Expressions & Messages
