@@ -459,7 +459,9 @@ class Validator {
     private function getRuleName( $ruleName ) {
         if ( $this->findChar( '--', $ruleName ) ) {
             $ruleName = explode( '--', $ruleName )[ 0 ];
-        } else if ( $this->findChar( ':', $ruleName ) ) {
+        } 
+        
+        if ( $this->findChar( ':', $ruleName ) ) {
             $ruleName = explode( ':', $ruleName )[ 0 ];
         }
 
@@ -513,8 +515,8 @@ class Validator {
      */
     private function extractSame( $rule ) {
         $rule = explode( ':', $rule );
-
-        return end( $rule );
+        $rule = explode( '--', end( $rule ) );
+        return $rule[0];
     }
 
 
