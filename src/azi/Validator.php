@@ -515,7 +515,8 @@ class Validator {
      */
     private function extractSame( $rule ) {
         $rule = explode( ':', $rule );
-        $rule = explode( '--', end( $rule ) );
+        $rule = end( $rule );
+        $rule = explode( '--', $rule );
         return $rule[0];
     }
 
