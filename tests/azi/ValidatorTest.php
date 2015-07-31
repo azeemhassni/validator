@@ -80,6 +80,15 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase {
         $this->validator->validate(['url' => 'http://example.com'],['url' => 'url']);
         $this->assertTrue($this->validator->passed());
     }
+    
+    public function testSameRuleWithCustomMessage(){
+            $this->validator->validate([
+                'email' => 'john@example.com'
+                'confirm_email' => 'john@examplex.com'
+                ],['email' => 'required', 'confirm_email' => 'same:confirm_email--Enter the same email you typed above!']);
+            $this->assertTrue($this->validator->passed());
+        
+    }
 
 }
  
