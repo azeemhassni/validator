@@ -42,7 +42,7 @@ class MinRule implements RuleInterface
         $this->field = $field;
         $this->message = $message;
         if($this->length) {
-            if ( strlen( $value ) > $this->length ) {
+            if ( strlen( $value ) >= $this->length ) {
                 return true;
             }
         } else {
