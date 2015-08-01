@@ -342,7 +342,8 @@ class Validator {
     public function extractCustomMessage( $theRule ) {
 
         if ( $this->findChar( '--', $theRule ) ) {
-            return end( explode( '--', $theRule ) );
+            $theRule = explode( '--', $theRule );
+            return end( $theRule );
         }
 
         return null;
