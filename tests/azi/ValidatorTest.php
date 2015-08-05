@@ -51,6 +51,28 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase {
         $this->assertTrue($this->validator->passed());
     }
 
+    
+    public function testEqualMinLengthValidation(){
+        $this->validator->validate(['title' => 'Length of this string is 35 symbols'], ['title' => 'max:35']);
+        $this->assertTrue($this->validator->passed());
+    }
+
+
+    public function testEqualMaxLengthValidation(){
+        $this->validator->validate(['description' => 'Length of this string is 35 symbols'], ['description' => 'min:35']);
+        $this->assertTrue($this->validator->passed());
+    }
+    
+    public function testNotEqualMinLengthValidation(){
+        $this->validator->validate(['title' => 'Length of this string is 35 symbols'], ['title' => 'max:34']);
+        $this->assertFalse($this->validator->passed());
+    }
+    
+    
+    public function testNotEqualMaxLengthValidation(){
+        $this->validator->validate(['description' => 'Length of this string is 35 symbols'], ['description' => 'min:36']);
+        $this->assertFalse($this->validator->passed());
+    }
 
     public function testConditionalValidation(){
         $this->validator->validate(['gender' => 'female','age' => ''], ['gender' => 'required','age' => 'if:gender[male](required)']);
