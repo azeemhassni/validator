@@ -7,7 +7,7 @@
 [![Latest Stable Version](https://poser.pugx.org/azi/validator/v/stable.svg)](https://packagist.org/packages/azi/validator) [![Total Downloads](https://poser.pugx.org/azi/validator/downloads.svg)](https://packagist.org/packages/azi/validator) [![Latest Unstable Version](https://poser.pugx.org/azi/validator/v/unstable.svg)](https://packagist.org/packages/azi/validator) [![License](https://poser.pugx.org/azi/validator/license.svg)](https://packagist.org/packages/azi/validator) 
 [![Join the chat at https://gitter.im/azeemhassni/validator](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/azeemhassni/validator?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-This is a small PHP class that makes it easy to validate forms in your project specially larger forms.
+This is a small PHP package that makes it easy to validate forms in your project specially larger forms.
 
 [![Watch installation and basic usage](https://raw.githubusercontent.com/azeemhassni/validator/master/thumbnail.png)](http://www.youtube.com/watch?v=Ngxk95xg5DM)
 
