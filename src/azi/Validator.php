@@ -234,7 +234,7 @@ class Validator {
 
         // loop through rules array
         foreach ( $rules as $field => $ruleString ) {
-            $value = $fields[ $field ];
+            $value = isset($fields[ $field ]) ? $fields[ $field ] : null;
 
             // rules string to array required|email will bary [required,email]
 
