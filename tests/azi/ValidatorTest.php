@@ -124,8 +124,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase {
         });
 
         $this->validator->validate(['name' => 'Azi Hassni'], ['name' => 'my_name']);
-        print_r($this->validator->getErrors());
-        exit;
+     
         $this->assertTrue($this->validator->passed());
 
     }
