@@ -116,8 +116,7 @@ this weekend (15th Aug 2015) i was working a must have feature in validator whic
 here is how you can use it from now on.
 ## Registring custom rules
 ```php
-
-$validator = new azi/validator();
+$validator = new azi\validator();
 $validator->addRule('check_existence', function($field, $value){
     $query = mysqli_query("SELECT * FROM users WHERE username = $value");
     if($query->affected_rows > 0) {
@@ -133,7 +132,6 @@ $validator->addRule('check_existence', function($field, $value){
 now you can use this newly registered rule.
 
 ```php
-$validator = new azi\Validator();
 $validator->validate(
     $_POST, ['username' => 'check_existence|required']
 );
