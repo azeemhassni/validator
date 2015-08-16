@@ -460,7 +460,9 @@ class Validator
      */
     private function validateAgainstCustomRules( $field, $value, $theRule )
     {
-        if ($message = call_user_func_array($this->rules[$theRule], array($field, $value)) === true) {
+        $message = call_user_func_array($this->rules[$theRule], array($field, $value));
+
+        if ($message === true) {
             return true;
         }
 
