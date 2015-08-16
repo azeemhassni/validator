@@ -112,9 +112,10 @@ you can also pass a custom error message with each rule
  $rules['full_name'] = "required--Please Enter your name";
 ```
 
+
+## Registring custom rules
 this weekend (15th Aug 2015) i was working a must have feature in validator which is accepting custom rules from user.
 here is how you can use it from now on.
-## Registring custom rules
 ```php
 $validator = new azi\validator();
 $validator->addRule('check_existence', function($field, $value){
