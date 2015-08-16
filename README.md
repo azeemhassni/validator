@@ -112,6 +112,24 @@ you can also pass a custom error message with each rule
  $rules['full_name'] = "required--Please Enter your name";
 ```
 
+this weekend (15th Aug 2015) i was working a must have feature in validator which is accepting custom rules from user.
+here is how you can use it from now on.
+## Registring custom rules
+```php
+
+$validator = new azi/validator();
+$validator->addRule('user_exists', function($field, $value){
+    $query = mysqli_query("SELECT * FROM users WHERE username = $value");
+    if($query->affected_rows > 0) {
+        return "Username '$value' already exists please try something else";
+    }
+    
+    return true;
+);
+```
+now you have so much power on your fields validation do whatever you want in Closure you passed to
+```Validator::addRule()``` as 2nd argument.
+
 ## Conditional Rules
 you can spacify conditional rules for a field
 ```php
