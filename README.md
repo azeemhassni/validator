@@ -118,7 +118,7 @@ here is how you can use it from now on.
 ```php
 
 $validator = new azi/validator();
-$validator->addRule('user_exists', function($field, $value){
+$validator->addRule('check_existence', function($field, $value){
     $query = mysqli_query("SELECT * FROM users WHERE username = $value");
     if($query->affected_rows > 0) {
         return "Username '$value' already exists please try something else";
@@ -126,7 +126,20 @@ $validator->addRule('user_exists', function($field, $value){
     
     return true;
 );
+
 ```
+
+
+now you can use this newly registered rule.
+
+```php
+$validator = new azi\Validator();
+$validator->validate(
+    $_POST, ['username' => 'check_existence|required']
+);
+```
+
+
 now you have so much power on your fields validation do whatever you want in Closure you passed to
 ```Validator::addRule()``` as 2nd argument.
 
