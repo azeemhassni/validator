@@ -123,8 +123,8 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase {
             return true;
         });
 
-        $this->validator->validate(['name' => 'Azi Hassni'], ['name' => 'my_name']);
-     
+        $this->validator->validate(['name' => 'Azi Baloch'], ['name' => 'my_name']);
+
         $this->assertTrue($this->validator->passed());
 
     }
