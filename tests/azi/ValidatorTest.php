@@ -112,5 +112,22 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase {
         
     }
 
+
+    public function testAddingCustomRules(){
+
+        $this->validator->addRule('myname', function($field, $value){
+            if($value != "Azi Baloch"){
+                return $field." must be Azi Baloch";
+            }
+
+            return true;
+        });
+
+        $this->validator->validate(['name' => 'Azi Baloch'], ['name' => 'myname']);
+
+        $this->assertTrue($this->validator->passed());
+
+    }
+
 }
  
