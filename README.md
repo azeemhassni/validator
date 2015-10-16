@@ -114,11 +114,11 @@ you can also pass a custom error message with each rule
 
 
 ## Registring custom rules
-this weekend (15th Aug 2015) i was working a must have feature in validator which is accepting custom rules from user.
-here is how you can use it from now on.
+this weekend (15th Aug 2015) i was working on a must have feature in validator which is accepting custom rules at run time.
+here is how you can do it from now on.
 ```php
 $validator = new azi\validator();
-$validator->addRule('check_existence', function($field, $value){
+$validator->addRule('isUnique', function($field, $value){
     $query = mysqli_query("SELECT * FROM users WHERE username = $value");
     if($query->affected_rows > 0) {
         return "Username '$value' already exists please try something else";
@@ -134,7 +134,7 @@ now you can use this newly registered rule.
 
 ```php
 $validator->validate(
-    $_POST, ['username' => 'check_existence|required']
+    $_POST, ['username' => 'isUnique|required']
 );
 ```
 
