@@ -271,23 +271,27 @@ class Validator
 
             $theRules = $this->extractRules($ruleString);
 
-            foreach ($theRules as $theRule) {
+            //skip validation for optional or empty values
+            if (in_array('required', $theRules) || !empty($value)) {
 
-                // extract custom messages passed with rule eg. email--Invalid Email
-                $message = $this->extractCustomMessage($theRule);
+                foreach ($theRules as $theRule) {
 
-                $this->validateByRule($field, $value, $theRule, $message);
+                    // extract custom messages passed with rule eg. email--Invalid Email
+                    $message = $this->extractCustomMessage($theRule);
 
+                    $this->validateByRule($field, $value, $theRule, $message);
 
-                // check if current rule is registered by user at runtime
-                if (array_key_exists($theRule, $this->expressions)) {
-                    // run the validation against Runtime registered regular expression
-                    $this->validateAgainstExpression($field, $value, $theRule, $message);
-                }
+                    // check if current rule is registered by user at runtime
+                    if (array_key_exists($theRule, $this->expressions)) {
+                        // run the validation against Runtime registered regular expression
+                        $this->validateAgainstExpression($field, $value, $theRule, $message);
+                    }
 
-                // check if current rule is exists in custom rules
-                if (array_key_exists($theRule, $this->rules)) {
-                    $this->validateAgainstCustomRules($field, $value, $theRule, $message);
+                    // check if current rule is exists in custom rules
+                    if (array_key_exists($theRule, $this->rules)) {
+                        $this->validateAgainstCustomRules($field, $value, $theRule, $message);
+                    }
+
                 }
 
             }
