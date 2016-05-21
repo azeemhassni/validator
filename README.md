@@ -9,7 +9,6 @@
 
 This is a small PHP package that makes it easy to validate forms in your project specially larger forms.
 
-[![Watch installation and basic usage](https://raw.githubusercontent.com/azeemhassni/validator/master/thumbnail.png)](http://www.youtube.com/watch?v=Ngxk95xg5DM)
 
 
 ## Installation Guide:
