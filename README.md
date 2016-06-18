@@ -83,6 +83,7 @@ you can wrap error messages with custom HTML markup
  * min:number
  * max:number
  * same:field_name
+ * array
 
 
 ## Custom Expressions & Messages
