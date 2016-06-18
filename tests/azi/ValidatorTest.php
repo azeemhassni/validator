@@ -108,9 +108,18 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase {
                 'email' => 'john@example.com',
                 'confirm_email' => 'john@example.com'
                 ],['email' => 'required', 'confirm_email' => 'same:email--Enter the same email you typed above!']);
-            $this->assertTrue($this->validator->passed());
-        
+            $this->assertTrue($this->validator->passed());        
     }
 
+    public function testValidatorIsValidatingArray(){
+        $this->validator->validate(['items' => [1,2,3]], ['items' => 'array']);
+        $this->assertTrue($this->validator->passed());
+    }
+
+    public function testValidatorIsNotValidatingArray(){
+        $this->validator->validate(['items' => 'not array'], ['items' => 'array']);
+        $this->assertFalse($this->validator->passed());
+    }
+    
 }
  
