@@ -1,6 +1,6 @@
-# PHP Server Side Form Validation
+# This Package is Abandoned in favor if [https://github.com/azeemhassni/envalid](https://github.com/azeemhassni/envalid)
 
-
+## PHP Server Side Form Validation
 
 [![Build Status](https://travis-ci.org/azeemhassni/validator.svg?branch=v2.0)](https://travis-ci.org/azeemhassni/validator)
 [![Codacy Badge](https://www.codacy.com/project/badge/333e9f1f4abf4f6195e4a99b1a2e5766)](https://www.codacy.com/app/azibaloch247/validator)
